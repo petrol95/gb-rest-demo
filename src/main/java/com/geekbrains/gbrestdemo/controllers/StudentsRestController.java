@@ -33,6 +33,25 @@ public class StudentsRestController {
         return studentsService.getAllStudentsList();
     }
 
+    @PostMapping("/students")
+    public Student addStudent(@RequestBody Student student) {
+        student.setId(0L);
+        student = studentsService.saveOrUpdate(student);
+        return student;
+    }
+
+    @PutMapping("/students")
+    public Student updateStudent(@RequestBody Student student) {
+        student = studentsService.saveOrUpdate(student);
+        return student;
+    }
+
+    @DeleteMapping("/students/{studentId}")
+    public int deleteStudent(@PathVariable Long studentId) {
+        studentsService.delete(studentId);
+        return HttpStatus.OK.value();
+    }
+
     @ExceptionHandler
     public ResponseEntity<StudentsErrorResponse> handleException(StudentNotFoundException exc) {
         StudentsErrorResponse studentsErrorResponse = new StudentsErrorResponse();
@@ -40,14 +59,5 @@ public class StudentsRestController {
         studentsErrorResponse.setMessage(exc.getMessage());
         studentsErrorResponse.setTimestamp(System.currentTimeMillis());
         return new ResponseEntity<>(studentsErrorResponse, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<StudentsErrorResponse> handleAllException(Exception exc) {
-        StudentsErrorResponse studentsErrorResponse = new StudentsErrorResponse();
-        studentsErrorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
-        studentsErrorResponse.setMessage(exc.getMessage());
-        studentsErrorResponse.setTimestamp(System.currentTimeMillis());
-        return new ResponseEntity<>(studentsErrorResponse, HttpStatus.BAD_REQUEST);
     }
 }

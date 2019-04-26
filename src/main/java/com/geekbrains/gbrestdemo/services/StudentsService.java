@@ -26,6 +26,18 @@ public class StudentsService {
         return student.get();
     }
 
+    public Student saveOrUpdate(Student student) {
+        return studentsRepository.save(student);
+    }
+
+    public void delete(Long id) {
+        Optional<Student> student = studentsRepository.findById(id);
+        if(!student.isPresent()) {
+            throw new StudentNotFoundException("Student with id = " + id + " not found");
+        }
+        studentsRepository.delete(student.get());
+    }
+
     public List<Student> getAllStudentsList() {
         return (List<Student>)studentsRepository.findAll();
     }
