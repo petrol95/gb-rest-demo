@@ -2,8 +2,12 @@ package com.geekbrains.gbrestdemo.services;
 
 import com.geekbrains.gbrestdemo.entities.Student;
 import com.geekbrains.gbrestdemo.repositories.StudentsRepository;
+import com.geekbrains.gbrestdemo.utils.StudentNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StudentsService {
@@ -15,6 +19,14 @@ public class StudentsService {
     }
 
     public Student getStudentById(Long id) {
-        return studentsRepository.findById(id).get();
+        Optional<Student> student = studentsRepository.findById(id);
+        if(!student.isPresent()) {
+            throw new StudentNotFoundException("Student with id = " + id + " not found");
+        }
+        return student.get();
+    }
+
+    public List<Student> getAllStudentsList() {
+        return (List<Student>)studentsRepository.findAll();
     }
 }
